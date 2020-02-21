@@ -9,6 +9,7 @@
   "private": true,
   "dependencies": {
     "chalk": "^3.0.0",
+    "csv-parse": "^4.8.5",
     "meow": "^6.0.1"
   }
 }

@@ -1,7 +1,10 @@
 {
   "flags": {
-    
+    "input": {
+      "alias": "i",
+      "type": "string"
+    }
   },
   "inferType": true,
-  "booleanDefault": "undefined"
+  "booleanDefault": true
 }

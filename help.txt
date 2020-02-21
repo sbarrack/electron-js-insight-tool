@@ -1,3 +1,11 @@
+Usage
+  $ node . -i file.csv
+  $ node . --help
+  $ node . --version
 
+Options
+  --help         Show this page
+  --version      Show the version in use
+  --input, -i    Input file
 
 02/21/2020    v2019.02.21    © Motionstrand
