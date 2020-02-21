@@ -1,0 +1,14 @@
+{
+  "name": "insight",
+  "version": "2020.02.21",
+  "description": "Motionstrand insight application",
+  "main": "index.js",
+  "repository": "git@bitbucket.org:MOSderek/insight.git",
+  "author": "sbarrack",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "private": true,
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "meow": "^6.0.1"
+  }
+}
