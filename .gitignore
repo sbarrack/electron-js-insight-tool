@@ -112,3 +112,5 @@ dist
 
 
 # Other
+config.json
+*.csv
