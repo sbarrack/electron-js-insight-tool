@@ -1,0 +1,17 @@
+{
+  "environment": "dev",
+  "version": "2019.02.21",
+  "headers": [
+    "browser",
+    "resolution",
+    "users",
+    "newUsers",
+    "sessions",
+    "bounceRate",
+    "pagesPerSession",
+    "avgSessionTime",
+    "percentNewUsers",
+    "avgSessionsPerUser",
+    "undefined"
+  ]
+}

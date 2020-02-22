@@ -112,6 +112,4 @@ dist
 
 
 # Other
-config.json
 *.csv
-!sample.csv
