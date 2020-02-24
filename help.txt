@@ -6,6 +6,6 @@ Usage
 Options
   --help         Show this page
   --version      Show the version in use
-  --input, -i    Input file
+  --input, -i    Input file (required)
 
 02/21/2020    v2019.02.21    © Motionstrand

@@ -13,18 +13,16 @@ const outpath = 'index.html'
 
 // _____________________________________________________
 
-const parsed = []
-
 if (!meow.flags.input) {
   console.log('I need a real file, please.')
   process.exit()
 }
 const input = fs.createReadStream(meow.flags.input)
 
+let parsed
+
 const rowOp = row => {
   delete row.undefined
-  row.percentNewUsers = row.newUsers / row.newUsers
-  row.avgSessionsPerUser = row.sessions / row.users
   return row
 }
 
@@ -42,12 +40,22 @@ input.pipe(csvParse({
     console.error(e)
     return
   }
-  parsed.push(data)
+  parsed = data
 }))
 
 input.on('close', () => {
-  console.log(parsed)
-  // TODO create HTML
+  if (fs.existsSync(outpath))
+    fs.unlinkSync(outpath)
+  fs.copyFileSync('base.html', outpath)
+
+  parsed.forEach(row => {
+    fs.appendFileSync(outpath, '  <tr>\n')
+    for (let col in row) {
+      fs.appendFileSync(outpath, '    <td>' + row[col] + '</td>\n')
+    }
+    fs.appendFileSync(outpath, '  </tr>\n')
+  })
+  fs.appendFileSync(outpath, '</table>\n</body>\n</html>\n')
 })
 
 // _____________________________________________________

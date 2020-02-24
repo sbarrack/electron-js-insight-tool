@@ -10,8 +10,8 @@
     "bounceRate",
     "pagesPerSession",
     "avgSessionTime",
-    "percentNewUsers",
-    "avgSessionsPerUser",
+    "undefined",
+    "undefined",
     "undefined"
   ]
 }
