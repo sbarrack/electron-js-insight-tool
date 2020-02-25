@@ -1,3 +1,5 @@
+// TODO dates, async and multi files
+
 'use strict'
 
 const fs = require('fs')
@@ -44,6 +46,8 @@ input.pipe(csvParse({
 }))
 
 input.on('close', () => {
+  // TODO combine duplicates in parsed
+
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
   fs.copyFileSync('base.html', outpath)
@@ -55,7 +59,7 @@ input.on('close', () => {
     }
     fs.appendFileSync(outpath, '  </tr>\n')
   })
-  fs.appendFileSync(outpath, '</table>\n</body>\n</html>\n')
+  fs.appendFileSync(outpath, '</table>\n</body>\n</html>')
 })
 
 // _____________________________________________________

@@ -2,7 +2,7 @@
   "environment": "dev",
   "version": "2019.02.21",
   "headers": [
-    "browser",
+    "undefined",
     "resolution",
     "users",
     "newUsers",
