@@ -7,7 +7,7 @@
     "users",
     "newUsers",
     "sessions",
-    "bounceRate",
+    "bouncePercent",
     "pagesPerSession",
     "avgSessionTime",
     "undefined",
