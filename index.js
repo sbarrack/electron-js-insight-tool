@@ -25,13 +25,13 @@ let parsed
 
 const rowOp = row => {
   delete row.undefined
-  if (typeof row.users === 'string') row.users = parseInt(row.users.replace(/,/g, ''), 10)
-  if (typeof row.newUsers === 'string') row.newUsers = parseInt(row.newUsers.replace(/,/g, ''), 10)
-  if (typeof row.sessions === 'string') row.sessions = parseInt(row.sessions.replace(/,/g, ''), 10)
-  row.bouncePercent = parseFloat(row.bouncePercent.replace(/%/g, ''))
-  row.pagesPerSession = parseFloat(row.pagesPerSession)
-  let temp = row.avgSessionTime.split(':')
-  row.avgSessionTime = parseInt(temp[0], 10) * 3600 + parseInt(temp[1], 10) * 60 + parseInt(temp[2], 10)
+  if (typeof row.users === 'string') row.users = +row.users.replace(/,/g, '')
+  if (typeof row.newUsers === 'string') row.newUsers = +row.newUsers.replace(/,/g, '')
+  if (typeof row.sessions === 'string') row.sessions = +row.sessions.replace(/,/g, '')
+  row.bouncePercent = +row.bouncePercent.replace(/%/g, '') / 100
+  row.pagesPerSession = +row.pagesPerSession
+  let temp = row.avgSessionTime.replace('<', '').split(':')
+  row.avgSessionTime = +temp[0] * 3600 + +temp[1] * 60 + +temp[2]
   return row
 }
 
@@ -53,21 +53,24 @@ input.pipe(csvParse({
 }))
 
 input.on('close', () => {
-  // TODO combine duplicates in parsed
   for (let i = 0; i < parsed.length; i++) {
     for (let j = i + 1; j < parsed.length; j++) {
       if (parsed[i].resolution === parsed[j].resolution) {
+        parsed[i].bouncePercent = (parsed[i].bouncePercent * parsed[i].users + parsed[j].bouncePercent * parsed[j].users) / (parsed[j].users + parsed[i].users)
         parsed[i].users += parsed[j].users
         parsed[i].newUsers += parsed[j].newUsers
-        parsed[i].sessions += parsed[j].sessions
-        // TODO recalculate bounce percent
         let temp = parsed[i].sessions + parsed[j].sessions
         parsed[i].pagesPerSession = (parsed[i].pagesPerSession * parsed[i].sessions + parsed[j].pagesPerSession * parsed[j].sessions) / temp
-        parsed[i].avgSessionTime = (parsed[i].avgSessionTime * parsed[i].sessions + parsed[j].avgSessionTime * parsed[j].sessions) / temp
+        parsed[i].avgSessionTime = Math.round((parsed[i].avgSessionTime * parsed[i].sessions + parsed[j].avgSessionTime * parsed[j].sessions) / temp)
+        parsed[i].sessions += parsed[j].sessions
         parsed.splice(j--, 1)
       }
     }
+
+    parsed[i].bouncePercent = (parsed[i].bouncePercent * 100).toFixed(2) + '%'
+    parsed[i].pagesPerSession = (+parsed[i].pagesPerSession).toFixed(2)
   }
+  parsed[parsed.length - 1].resolution = '<b>Totals</b>'
 
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
