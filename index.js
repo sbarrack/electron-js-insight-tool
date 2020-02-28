@@ -1,9 +1,10 @@
-// TODO dates, async and multi files
+// TODO async and multi files, sorting script
 
 'use strict'
 
 const fs = require('fs')
 const path = require('path')
+const readline = require('readline')
 
 const chalk = require('chalk')
 const meow = require('meow')(rFile('help.txt').toString(), JSON.parse(rFile('meow.json')))
@@ -20,6 +21,17 @@ if (!meow.flags.input) {
   process.exit()
 }
 const input = fs.createReadStream(meow.flags.input)
+
+let dateRange
+
+input.on('ready', () => {
+  readline.createInterface({
+    input: input,
+    crlfDelay: Infinity
+  }).on('line', line => {
+    if (line.length == 19) dateRange = line.slice(2)
+  })
+})
 
 let parsed
 
@@ -74,7 +86,7 @@ input.on('close', () => {
 
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
-  fs.copyFileSync('base.html', outpath)
+  fs.copyFileSync(config.head, outpath)
 
   parsed.forEach(row => {
     fs.appendFileSync(outpath, '  <tr>\n')
@@ -83,15 +95,13 @@ input.on('close', () => {
     }
     fs.appendFileSync(outpath, '  </tr>\n')
   })
-  fs.appendFileSync(outpath, '</table>\n</body>\n</html>')
+  
+  fs.appendFileSync(outpath, '<p>' + dateRange + '</p>')
+  fs.appendFileSync(outpath, fs.readFileSync(config.foot))
 })
 
 // _____________________________________________________
 
-/**
- * 
- * @param {string} file Target file path relative to .
- */
 function rFile(file) {
   return fs.readFileSync(path.join(__dirname, file))
 }

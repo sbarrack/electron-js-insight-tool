@@ -13,5 +13,7 @@
     "undefined",
     "undefined",
     "undefined"
-  ]
+  ],
+  "head": "head.html",
+  "foot": "foot.html"
 }
