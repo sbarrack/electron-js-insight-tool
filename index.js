@@ -1,5 +1,3 @@
-// TODO async and multi files, sorting script
-
 'use strict'
 
 const fs = require('fs')
@@ -12,30 +10,42 @@ const csvParse = require('csv-parse')
 
 var config = JSON.parse(rFile('config.json'))
 
+if (!meow.flags.input) {
+  console.log(chalk.redBright('MISSING TARGET: Please use -i to provide a valid path'))
+  process.exit()
+}
+
+const input = fs.createReadStream(meow.flags.input)
+const parser = csvParse({
+  cast: true,
+  columns: config.headers,
+  comment: '#',
+  from: 2,
+  on_record: rowOp,
+  skip_empty_lines: true,
+  skip_lines_with_error: true,
+  skip_lines_with_empty_values: true
+}, parserHandler)
 const outpath = 'index.html'
+
+var parsed = []
+var dateRange
 
 // _____________________________________________________
 
-if (!meow.flags.input) {
-  console.log('I need a real file, please.')
-  process.exit()
+// TODO async and multi files, sorting script
+input.on('ready', dateGetter)
+input.pipe(parser)
+
+input.on('close', postProcess)
+
+// _____________________________________________________
+
+function rFile(file) {
+  return fs.readFileSync(path.join(__dirname, file))
 }
-const input = fs.createReadStream(meow.flags.input)
 
-let dateRange
-
-input.on('ready', () => {
-  readline.createInterface({
-    input: input,
-    crlfDelay: Infinity
-  }).on('line', line => {
-    if (line.length == 19) dateRange = line.slice(2)
-  })
-})
-
-let parsed
-
-const rowOp = row => {
+function rowOp(row) {
   delete row.undefined
   if (typeof row.users === 'string') row.users = +row.users.replace(/,/g, '')
   if (typeof row.newUsers === 'string') row.newUsers = +row.newUsers.replace(/,/g, '')
@@ -47,24 +57,24 @@ const rowOp = row => {
   return row
 }
 
-input.pipe(csvParse({
-  cast: true,
-  columns: config.headers,
-  comment: '#',
-  from: 2,
-  on_record: rowOp,
-  skip_empty_lines: true,
-  skip_lines_with_error: true,
-  skip_lines_with_empty_values: true
-}, (e, data) => {
+function parserHandler(e, data) {
   if (e) {
-    console.error(e)
+    console.error(chalk.redBright(e))
     return
   }
-  parsed = data
-}))
+  parsed = parsed.concat(data)
+}
 
-input.on('close', () => {
+function dateGetter() {
+  readline.createInterface({
+    input: input,
+    crlfDelay: Infinity
+  }).on('line', line => {
+    if (line.length == 19) dateRange = line.slice(2)
+  })
+}
+
+function postProcess() {
   for (let i = 0; i < parsed.length; i++) {
     for (let j = i + 1; j < parsed.length; j++) {
       if (parsed[i].resolution === parsed[j].resolution) {
@@ -98,10 +108,5 @@ input.on('close', () => {
   
   fs.appendFileSync(outpath, '<p>' + dateRange + '</p>')
   fs.appendFileSync(outpath, fs.readFileSync(config.foot))
-})
-
-// _____________________________________________________
-
-function rFile(file) {
-  return fs.readFileSync(path.join(__dirname, file))
+  console.log(chalk.green('Done!'))
 }

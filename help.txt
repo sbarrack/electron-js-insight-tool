@@ -1,11 +1,11 @@
 Usage
-  $ node . -i file.csv
+  $ node . -i path
   $ node . --help
   $ node . --version
 
 Options
   --help         Show this page
   --version      Show the version in use
-  --input, -i    Input file (required)
+  --input, -i    File or directory or files with insight data
 
-02/21/2020    v2019.02.21    © Motionstrand
+02/28/2020    v2019.02.21    © Motionstrand

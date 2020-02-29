@@ -114,3 +114,5 @@ dist
 # Other
 *.csv
 index.html
+dist
+build.sh
