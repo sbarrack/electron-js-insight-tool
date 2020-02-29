@@ -1,0 +1,12 @@
+th {
+  text-align: left;
+}
+
+td {
+  text-align: right;
+}
+
+th,
+td {
+  padding-right: 10px;
+}

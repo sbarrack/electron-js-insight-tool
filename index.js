@@ -33,7 +33,7 @@ var dateRange
 
 // _____________________________________________________
 
-// TODO async and multi files, sorting script
+// TODO async and multi files
 input.on('ready', dateGetter)
 input.pipe(parser)
 
