@@ -33,13 +33,11 @@ var dateRange
 
 // _____________________________________________________
 
-// TODO 1. percentage of totals
-// 2. multiple files
-// 3. object merge resolutions x devices
+// TODO 1. multiple files
+// 2. object merge resolutions x devices
 
 input.on('ready', dateGetter)
 input.pipe(parser)
-
 input.on('close', postProcess)
 
 // _____________________________________________________
@@ -73,26 +71,29 @@ function dateGetter() {
 }
 
 function postProcess() {
-  for (let i = 0; i < parsed.length; i++) {
-    for (let j = i + 1; j < parsed.length; j++) {
+  let temp
+  for (let i = 0; i < parsed.length - 1; i++) {
+    for (let j = i + 1; j < parsed.length - 1; j++) {
       if (parsed[i].resolution === parsed[j].resolution) {
         parsed[i].users += parsed[j].users
         parsed[i].newUsers += parsed[j].newUsers
         parsed.splice(j--, 1)
       }
     }
+    temp = parsed.length - 1
+    parsed[i].percentOfTotalUsers = (parsed[i].users / parsed[temp].users * 100).toFixed(2)
+    parsed[i].percentOfTotalNewUsers = (parsed[i].newUsers / parsed[temp].newUsers * 100).toFixed(2)
   }
-  parsed[parsed.length - 1].resolution = '<b>Totals</b>'
+  parsed[temp].resolution = '<b>Totals</b>'
+  parsed[temp].percentOfTotalUsers = parsed[temp].percentOfTotalNewUsers = '100.00'
 
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
   fs.copyFileSync(config.head, outpath)
 
-  config.headers.forEach(h => {
-    if (h != 'undefined') {
-      let temp = h.replace(/([A-Z])/g, ' $1')
-      fs.appendFileSync(outpath, '    <th>' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>')
-    }
+  Object.keys(parsed[0]).forEach(h => {
+    let temp = h.replace(/([A-Z])/g, ' $1')
+    fs.appendFileSync(outpath, '    <th>' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>')
   })
   fs.appendFileSync(outpath, '  </tr>')
 
