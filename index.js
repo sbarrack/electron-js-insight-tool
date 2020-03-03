@@ -33,7 +33,10 @@ var dateRange
 
 // _____________________________________________________
 
-// TODO async and multi files
+// TODO 1. percentage of totals
+// 2. multiple files
+// 3. object merge resolutions x devices
+
 input.on('ready', dateGetter)
 input.pipe(parser)
 
