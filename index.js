@@ -33,8 +33,7 @@ var dateRange
 
 // _____________________________________________________
 
-// TODO 1. multiple files
-// 2. object merge resolutions x devices
+// TODO multiple files
 
 input.on('ready', dateGetter)
 input.pipe(parser)
@@ -83,6 +82,14 @@ function postProcess() {
     temp = parsed.length - 1
     parsed[i].percentOfTotalUsers = (parsed[i].users / parsed[temp].users * 100).toFixed(2)
     parsed[i].percentOfTotalNewUsers = (parsed[i].newUsers / parsed[temp].newUsers * 100).toFixed(2)
+    let temp2 = 0, temp3 = ''
+    config.devices.forEach(d => {
+      if (Object.keys(d)[0] === parsed[i].resolution) {
+        if (++temp2 == 1)
+          temp3 = d[parsed[i].resolution]
+      }
+    })
+    parsed[i].device = temp3
   }
   parsed[temp].resolution = '<b>Totals</b>'
   parsed[temp].percentOfTotalUsers = parsed[temp].percentOfTotalNewUsers = '100.00'

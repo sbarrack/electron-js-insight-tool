@@ -15,5 +15,11 @@
     "undefined"
   ],
   "head": "head.html",
-  "foot": "foot.html"
+  "foot": "foot.html",
+  "devices": [
+    { "375x667": "Apple iPhone 6/6S/7/8" },
+    { "414x736": "Apple iPhone 6S+/7+/8+" },
+    { "375x812": "Apple iPhone X/XS" },
+    { "414x896": "Apple iPhone XR/XS Max" }
+  ]
 }
