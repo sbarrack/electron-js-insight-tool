@@ -34,7 +34,17 @@ var parsed = [], totals = [], dateRange = []
 // _____________________________________________________
 
 if (fs.lstatSync(meow.flags.input).isDirectory()) {
-  // TODO read multiple files
+  fs.readdir(meow.flags.input, { withFileTypes: true }, (e, files) => {
+    if (e) {
+      console.error(e)
+      return
+    }
+    files.forEach(f => {
+      if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
+        // TODO async read the file alongside the rest
+      }
+    })
+  })
 } else {
   var input = fs.createReadStream(meow.flags.input)
   input.on('ready', dateGetter)
