@@ -8,14 +8,15 @@ const chalk = require('chalk')
 const meow = require('meow')(rFile('help.txt').toString(), JSON.parse(rFile('meow.json')))
 const csvParse = require('csv-parse')
 
-var config = JSON.parse(rFile('config.json'))
-
 if (!meow.flags.input) {
   console.log(chalk.redBright('MISSING TARGET: Please use -i to provide a valid path'))
   process.exit()
+} else if (!fs.existsSync(meow.flags.input)) {
+  console.log(chalk.redBright('INVALID TARGET: The path is not valid or does not exist'))
+  process.exit()
 }
 
-const input = fs.createReadStream(meow.flags.input)
+const config = JSON.parse(rFile('config.json'))
 const parser = csvParse({
   cast: true,
   columns: config.headers,
@@ -28,16 +29,18 @@ const parser = csvParse({
 }, parserHandler)
 const outpath = 'index.html'
 
-var parsed = []
-var dateRange
+var parsed = [], totals = [], dateRange = []
 
 // _____________________________________________________
 
-// TODO multiple files
-
-input.on('ready', dateGetter)
-input.pipe(parser)
-input.on('close', postProcess)
+if (fs.lstatSync(meow.flags.input).isDirectory()) {
+  // TODO read multiple files
+} else {
+  var input = fs.createReadStream(meow.flags.input)
+  input.on('ready', dateGetter)
+  input.pipe(parser)
+  input.on('close', postProcess)
+}
 
 // _____________________________________________________
 
@@ -57,6 +60,7 @@ function parserHandler(e, data) {
     console.error(chalk.redBright(e))
     return
   }
+  totals.push(data.pop())
   parsed = parsed.concat(data)
 }
 
@@ -65,12 +69,23 @@ function dateGetter() {
     input: input,
     crlfDelay: Infinity
   }).on('line', line => {
-    if (line.length == 19) dateRange = line.slice(2)
+    if (line.length == 19) {
+      dateRange.push(line.slice(2))
+    }
   })
 }
 
 function postProcess() {
-  let temp
+  parsed.push({
+    resolution: '<b>Totals</b>',
+    users: 0,
+    newUsers: 0
+  })
+  let temp = parsed.length - 1
+  totals.forEach(t => {
+    parsed[temp].users += t.users
+    parsed[temp].newUsers += t.newUsers
+  })
   for (let i = 0; i < parsed.length - 1; i++) {
     for (let j = i + 1; j < parsed.length - 1; j++) {
       if (parsed[i].resolution === parsed[j].resolution) {
@@ -91,7 +106,6 @@ function postProcess() {
     })
     parsed[i].device = temp3
   }
-  parsed[temp].resolution = '<b>Totals</b>'
   parsed[temp].percentOfTotalUsers = parsed[temp].percentOfTotalNewUsers = '100.00'
 
   if (fs.existsSync(outpath))
@@ -112,6 +126,8 @@ function postProcess() {
     fs.appendFileSync(outpath, '  </tr>\n')
   })
   
+  // TODO combine date ranges
+
   fs.appendFileSync(outpath, '<p>' + dateRange + '</p>')
   fs.appendFileSync(outpath, fs.readFileSync(config.foot))
   console.log(chalk.green('Done!'))
