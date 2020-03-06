@@ -120,7 +120,7 @@ function postProcess() {
 
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
-  fs.copyFileSync(config.head, outpath)
+  fs.copyFileSync(path.join(__dirname, config.head), outpath)
 
   Object.keys(parsed[0]).forEach(h => {
     let temp = h.replace(/([A-Z])/g, ' $1')
@@ -139,6 +139,6 @@ function postProcess() {
   // TODO combine date ranges
 
   fs.appendFileSync(outpath, '<p>' + dateRange + '</p>')
-  fs.appendFileSync(outpath, fs.readFileSync(config.foot))
+  fs.appendFileSync(outpath, rFile(config.foot))
   console.log(chalk.green('Done!'))
 }
