@@ -17,7 +17,7 @@ if (!meow.flags.input) {
 }
 
 const config = JSON.parse(rFile('config.json'))
-const parser = csvParse({
+const parseDef = {
   cast: true,
   columns: config.headers,
   comment: '#',
@@ -26,7 +26,7 @@ const parser = csvParse({
   skip_empty_lines: true,
   skip_lines_with_error: true,
   skip_lines_with_empty_values: true
-}, parserHandler)
+}
 const outpath = 'index.html'
 
 var parsed = [], totals = [], dateRange = []
@@ -41,22 +41,22 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
     }
     files.forEach(f => {
       if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
-        // TODO get dates from files
-        fs.readFile(meow.flags.input + '/' + f.name, (e, data) => {
+        fs.readFile(path.join(meow.flags.input, f.name), (e, data) => {
           if (e) {
-            console.error(chalk.magenta(e))
+            console.log(chalk.magenta(e))
             return
           }
-          parser.write(data)
+          // TODO get date
+          csvParse(data, parseDef, parserHandler)
         })
       }
     })
-    // TODO call postProcess after all files are read
+    setTimeout(postProcess, 1000)
   })
 } else {
   var input = fs.createReadStream(meow.flags.input)
   input.on('ready', dateGetter)
-  input.pipe(parser)
+  input.pipe(csvParse(parseDef, parserHandler))
   input.on('close', postProcess)
 }
 
