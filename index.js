@@ -36,14 +36,22 @@ var parsed = [], totals = [], dateRange = []
 if (fs.lstatSync(meow.flags.input).isDirectory()) {
   fs.readdir(meow.flags.input, { withFileTypes: true }, (e, files) => {
     if (e) {
-      console.error(e)
+      console.error(chalk.magenta(e))
       return
     }
     files.forEach(f => {
       if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
-        // TODO async read the file alongside the rest
+        // TODO get dates from files
+        fs.readFile(meow.flags.input + '/' + f.name, (e, data) => {
+          if (e) {
+            console.error(chalk.magenta(e))
+            return
+          }
+          parser.write(data)
+        })
       }
     })
+    // TODO call postProcess after all files are read
   })
 } else {
   var input = fs.createReadStream(meow.flags.input)
@@ -67,7 +75,7 @@ function rowOp(row) {
 
 function parserHandler(e, data) {
   if (e) {
-    console.error(chalk.redBright(e))
+    console.error(chalk.magenta(e))
     return
   }
   totals.push(data.pop())
