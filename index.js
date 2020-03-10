@@ -39,19 +39,24 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
       console.error(chalk.magenta(e))
       return
     }
-    files.forEach(f => {
+    let ious = []
+    files.forEach((f, i) => {
       if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
-        fs.readFile(path.join(meow.flags.input, f.name), (e, data) => {
-          if (e) {
-            console.log(chalk.magenta(e))
-            return
-          }
-          dateRange.push(data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2))
-          csvParse(data, parseDef, parserHandler)
+        ious[i] = new Promise((resolve, reject) => {
+          fs.readFile(path.join(meow.flags.input, f.name), (e, data) => {
+            if (e) {
+              console.log(chalk.magenta(e))
+              reject(e)
+              return
+            }
+            dateRange.push(data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2))
+            csvParse(data, parseDef, parserHandler)
+            resolve(data)
+          })
         })
       }
     })
-    setTimeout(postProcess, 1000) // TODO actualy wait for file reads to finish
+    Promise.allSettled(ious).then(postProcess)
   })
 } else {
   var input = fs.createReadStream(meow.flags.input)
@@ -61,6 +66,7 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
 }
 
 // _____________________________________________________
+
 
 function rFile(file) {
   return fs.readFileSync(path.join(__dirname, file))
