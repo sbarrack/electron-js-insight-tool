@@ -46,12 +46,12 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
             console.log(chalk.magenta(e))
             return
           }
-          // TODO get date
+          dateRange.push(data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2))
           csvParse(data, parseDef, parserHandler)
         })
       }
     })
-    setTimeout(postProcess, 1000)
+    setTimeout(postProcess, 1000) // TODO actualy wait for file reads to finish
   })
 } else {
   var input = fs.createReadStream(meow.flags.input)
