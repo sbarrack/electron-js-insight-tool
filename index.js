@@ -68,7 +68,7 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
   input.on('close', postProcess)
 }
 
-// _____________________________________________________
+// _________________________________________________________________________________________________
 
 
 function rFile(file) {
@@ -141,21 +141,21 @@ function postProcess() {
 
   Object.keys(parsed[0]).forEach(h => {
     let temp = h.replace(/([A-Z])/g, ' $1')
-    fs.appendFileSync(outpath, '    <th>' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>')
+    fs.appendFileSync(outpath, '      <th>' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>\n')
   })
-  fs.appendFileSync(outpath, '  </tr>')
+  fs.appendFileSync(outpath, '    </tr>\n')
 
   parsed.forEach(row => {
-    fs.appendFileSync(outpath, '  <tr>\n')
+    fs.appendFileSync(outpath, '    <tr>\n')
     for (let col in row) {
-      fs.appendFileSync(outpath, '    <td>' + row[col] + '</td>\n')
+      fs.appendFileSync(outpath, '      <td>' + row[col] + '</td>\n')
     }
-    fs.appendFileSync(outpath, '  </tr>\n')
+    fs.appendFileSync(outpath, '    </tr>\n')
   })
   
   // TODO combine date ranges
 
-  fs.appendFileSync(outpath, '<p>' + dateRange + '</p>')
+  fs.appendFileSync(outpath, '    <p>' + dateRange + '</p>\n')
   fs.appendFileSync(outpath, rFile(config.foot))
   console.log(chalk.green('Done!'))
 }
