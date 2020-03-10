@@ -7,6 +7,7 @@ const readline = require('readline')
 const chalk = require('chalk')
 const meow = require('meow')(rFile('help.txt').toString(), JSON.parse(rFile('meow.json')))
 const csvParse = require('csv-parse')
+const moment = require('moment')
 
 if (!meow.flags.input) {
   console.log(chalk.redBright('MISSING TARGET: Please use -i to provide a valid path'))
@@ -31,8 +32,6 @@ const outpath = 'index.html'
 
 var parsed = [], totals = [], dateRange = []
 
-// _____________________________________________________
-
 if (fs.lstatSync(meow.flags.input).isDirectory()) {
   fs.readdir(meow.flags.input, { withFileTypes: true }, (e, files) => {
     if (e) {
@@ -49,7 +48,11 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
               reject(e)
               return
             }
-            dateRange.push(data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2))
+            let dates = data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2).split('-')
+            dateRange.push({
+              start: moment(dates[0], 'YYYYMMDD').toDate(),
+              end: moment(dates[1], 'YYYYMMDD').toDate()
+            })
             csvParse(data, parseDef, parserHandler)
             resolve(data)
           })
@@ -93,7 +96,7 @@ function dateGetter() {
     input: input,
     crlfDelay: Infinity
   }).on('line', line => {
-    if (line.length == 19) {
+    if (line.length == 19 && line.startsWith('# ')) {
       dateRange.push(line.slice(2))
     }
   })
