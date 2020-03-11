@@ -10,10 +10,10 @@ const csvParse = require('csv-parse')
 const moment = require('moment')
 
 if (!meow.flags.input) {
-  console.log(chalk.redBright('MISSING TARGET: Please use -i to provide a valid path'))
+  console.log(chalk.redBright('MISSING TARGET') + ': Please use -i to provide a valid path')
   process.exit()
 } else if (!fs.existsSync(meow.flags.input)) {
-  console.log(chalk.redBright('INVALID TARGET: The path is not valid or does not exist'))
+  console.log(chalk.redBright('INVALID TARGET') + ': The path is not valid or does not exist')
   process.exit()
 }
 
@@ -29,38 +29,40 @@ const parseDef = {
   skip_lines_with_empty_values: true
 }
 const outpath = 'index.html'
+const inFormat = 'YYYYMMDD'
+const outFormat = 'M/D/YY'
 
-var parsed = [], totals = [], dateRange = []
+var parsed = [], totals = [], dates = []
 
 if (fs.lstatSync(meow.flags.input).isDirectory()) {
-  fs.readdir(meow.flags.input, { withFileTypes: true }, (e, files) => {
-    if (e) {
-      console.error(chalk.magenta(e))
-      return
-    }
-    let ious = []
-    files.forEach((f, i) => {
-      if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
-        ious[i] = new Promise((resolve, reject) => {
-          fs.readFile(path.join(meow.flags.input, f.name), (e, data) => {
-            if (e) {
-              console.log(chalk.magenta(e))
-              reject(e)
-              return
-            }
-            let dates = data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2).split('-')
-            dateRange.push({
-              start: moment(dates[0], 'YYYYMMDD').toDate(),
-              end: moment(dates[1], 'YYYYMMDD').toDate()
-            })
-            csvParse(data, parseDef, parserHandler)
-            resolve(data)
-          })
+  var ious = []
+  fs.readdirSync(meow.flags.input, { withFileTypes: true }).forEach((f, i) => {
+    if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
+      ious[i] = new Promise((resolve, reject) => {
+        fs.readFile(path.join(meow.flags.input, f.name), (e, data) => {
+          if (e) {
+            console.log(chalk.magenta(e))
+            reject(e)
+            return
+          }
+          let temp = data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2).split('-')
+          temp = {
+            start: moment(temp[0], inFormat),
+            end: moment(temp[1], inFormat)
+          }
+          if (!(temp.start.isValid() && temp.end.isValid()) || temp.start.isSameOrAfter(temp.end)) {
+            console.log(chalk.yellowBright('WARNING') + ': ' +
+              chalk.gray('Invalid date range for ') + f.name)
+          } else {
+            dates.push(temp)
+          }
+          csvParse(data, parseDef, parserHandler)
+          resolve(data)
         })
-      }
-    })
-    Promise.allSettled(ious).then(postProcess)
+      })
+    }
   })
+  Promise.allSettled(ious).then(postProcess)
 } else {
   var input = fs.createReadStream(meow.flags.input)
   input.on('ready', dateGetter)
@@ -97,12 +99,39 @@ function dateGetter() {
     crlfDelay: Infinity
   }).on('line', line => {
     if (line.length == 19 && line.startsWith('# ')) {
-      dateRange.push(line.slice(2))
+      let temp = line.slice(2).split('-')
+      temp[0] = moment(temp[0], inFormat).format(outFormat)
+      temp[1] = moment(temp[1], inFormat).format(outFormat)
+      dates.push(temp.join('-'))
     }
   })
 }
 
 function postProcess() {
+  if (dates[0] instanceof Object) {
+    dates.sort((a, b) => {
+      return b.start.isSameOrBefore(a.start)
+    })
+    
+    for (let i = 0; i < dates.length; i++) {
+      for (let j = i + 1; j < dates.length; j++) {
+        if (dates[i].end.isSame(dates[j].start)) {
+          dates[i].end = dates[j].end
+          dates.slice(j--, 1)
+        } else if (dates[i].end.isBefore(dates[j].start)) {
+          continue
+        } else {
+          console.log(chalk.yellowBright('WARNING') + ': ' + chalk.gray('Coinciding date range for ') +
+            dates[i].start.format(inFormat) + '-' + dates[i].end.format(inFormat) + chalk.gray(' and ') +
+            dates[j].start.format(inFormat) + '-' + dates[j].end.format(inFormat))
+        }
+      }
+      dates[i] = dates[i].start.format(outFormat) + '-' + dates[i].end.format(outFormat)
+    }
+    
+    dates = dates.join(', ')
+  }
+
   parsed.push({
     resolution: '<b>Totals</b>',
     users: 0,
@@ -152,10 +181,8 @@ function postProcess() {
     }
     fs.appendFileSync(outpath, '    </tr>\n')
   })
-  
-  // TODO combine date ranges
 
-  fs.appendFileSync(outpath, '    <p>' + dateRange + '</p>\n')
+  fs.appendFileSync(outpath, '    <p>' + dates + '</p>\n')
   fs.appendFileSync(outpath, rFile(config.foot))
   console.log(chalk.green('Done!'))
 }
