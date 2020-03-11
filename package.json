@@ -1,6 +1,6 @@
 {
   "name": "insight",
-  "version": "2020.03.03",
+  "version": "2020.03.11",
   "description": "Motionstrand insight application",
   "main": "index.js",
   "repository": "git@bitbucket.org:MOSderek/insight.git",
