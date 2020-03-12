@@ -1,11 +1,12 @@
 Usage
-  $ node . -i path
-  $ node . --help
-  $ node . --version
+  $ insight-linux -i path
+  $ insight-macos --help
+  $ insight-win.exe --version
 
 Options
-  --help         Show this page
-  --version      Show the version in use
-  --input, -i    File or directory of files with insight data
+  --help          Show this page
+  --version       Show the version in use
+  --input, -i     File or directory of files with insight data
+  --update, -u    Update the page styles and scripts
 
-03/11/2020    v2020.03.11    © Motionstrand
+03/12/2020    v2020.03.11    © Motionstrand

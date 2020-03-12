@@ -12,5 +12,17 @@
     "csv-parse": "^4.8.5",
     "meow": "^6.0.1",
     "moment": "^2.24.0"
+  },
+  "bin": "./index.js",
+  "pkg": {
+    "assets": [
+      "help.txt",
+      "meow.json",
+      "config.json",
+      "head.html",
+      "foot.html",
+      "page.js",
+      "style.css"
+    ]
   }
 }

@@ -1,4 +1,24 @@
 {
+  "meow": {
+    "flags": {
+      "input": {
+        "alias": "i",
+        "type": "string"
+      },
+      "update": {
+        "alias": "u"
+      }
+    },
+    "inferType": true,
+    "booleanDefault": true
+  },
+  "head": "head.html",
+  "foot": "foot.html",
+  "scripts": "page.js",
+  "styles": "style.css",
+  "outpath": "index.html",
+  "formatIn": "YYYYMMDD",
+  "formatOut": "M/D/YY",
   "headers": [
     "undefined",
     "resolution",
@@ -12,8 +32,6 @@
     "undefined",
     "undefined"
   ],
-  "head": "head.html",
-  "foot": "foot.html",
   "devices": [
     { "414x896": "Apple iPhone X Max" },
     { "414x736": "Apple iPhone 6/7/8+" },
