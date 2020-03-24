@@ -3,9 +3,22 @@
 const fs = require('fs')
 const path = require('path')
 
-const config = JSON.parse(rFile('config.json'))
-
-const meow = require('meow')(rFile('help.txt').toString(), config.meow)
+const meow = require('meow')('Usage\n$ insight-linux -i path\n$ insight-macos --help\n$ insight-win.exe --version\n\nOptions\
+--help          Show this page\n--version       Show the version in use\n--input, -i     File or directory of files with insight data\
+--update, -u    Update the page styles and scripts\n\
+03/24/2020    v2020.03.24    © Motionstrand', {
+  flags: {
+    input: {
+      alias: 'i',
+      type: 'string'
+    },
+    update: {
+      alias: 'u'
+    }
+  },
+  inferType: true,
+  booleanDefault: true
+})
 const chalk = require('chalk')
 
 if (!meow.flags.input) {
@@ -21,11 +34,21 @@ const readline = require('readline')
 const moment = require('moment')
 const csvParse = require('csv-parse')
 
-// _________________________________________________________________________________________________
-
 const parseDef = {
   cast: true,
-  columns: config.headers,
+  columns: [
+    'undefined',
+    'resolution',
+    'users',
+    'newUsers',
+    'undefined',
+    'undefined',
+    'undefined',
+    'undefined',
+    'undefined',
+    'undefined',
+    'undefined'
+  ],
   comment: '#',
   from: 2,
   on_record: rowOp,
@@ -33,8 +56,33 @@ const parseDef = {
   skip_lines_with_error: true,
   skip_lines_with_empty_values: true
 }
+const outpath = 'index.html'
+const formatIn = 'YYYYMMDD'
+const formatOut = 'M/D/YY'
+const devices = [
+  { '414x896': 'Apple iPhone X Max' },
+  { '414x736': 'Apple iPhone 6/7/8+' },
+  { '412x846': 'Samsung Galaxy S8/9+' },
+  { '412x823': 'Google Pixel 2 XL' },
+  { '412x738': 'Google Nexus 6P' },
+  { '412x640': 'Google Pixel 2' },
+  { '411x731': 'Google Pixel XL' },
+  { '393x786': 'Google Pixel 3' },
+  { '393x786': 'Xiaomi Redmi Note 5' },
+  { '375x812': 'Apple iPhone X' },
+  { '375x667': 'Apple iPhone 6/7/8' },
+  { '360x740': 'Samsung Galaxy' },
+  { '360x640': 'Android' },
+  { '360x748': 'Huawei P20' },
+  { '360x747': 'Huawei P20 Pro' },
+  { '360x760': 'Huawei P20 Lite' },
+  { '320x570': 'LG K7' },
+  { '320x570': 'ZTE' },
+  { '240x320': 'Lyf F90M (KaiOS)' }
+]
 
 var parsed = [], totals = [], dates = []
+
 
 if (fs.lstatSync(meow.flags.input).isDirectory()) {
   var ious = []
@@ -49,8 +97,8 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
           }
           let temp = data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2).split('-')
           temp = {
-            start: moment(temp[0], config.formatIn),
-            end: moment(temp[1], config.formatIn)
+            start: moment(temp[0], formatIn),
+            end: moment(temp[1], formatIn)
           }
           if (!(temp.start.isValid() && temp.end.isValid()) || temp.start.isSameOrAfter(temp.end)) {
             console.log(chalk.yellowBright('WARNING') + ': ' +
@@ -72,12 +120,6 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
   input.on('close', postProcess)
 }
 
-// _________________________________________________________________________________________________
-
-
-function rFile(file) {
-  return fs.readFileSync(path.join(__dirname, file))
-}
 
 function rowOp(row) {
   delete row.undefined
@@ -102,8 +144,8 @@ function dateGetter() {
   }).on('line', line => {
     if (line.length == 19 && line.startsWith('# ')) {
       let temp = line.slice(2).split('-')
-      temp[0] = moment(temp[0], config.formatIn).format(config.formatOut)
-      temp[1] = moment(temp[1], config.formatIn).format(config.formatOut)
+      temp[0] = moment(temp[0], formatIn).format(formatOut)
+      temp[1] = moment(temp[1], formatIn).format(formatOut)
       dates.push(temp.join('-'))
     }
   })
@@ -124,11 +166,11 @@ function postProcess() {
           continue
         } else {
           console.log(chalk.yellowBright('WARNING') + ': ' + chalk.gray('Coinciding date range for ') +
-            dates[i].start.format(config.formatIn) + '-' + dates[i].end.format(config.formatIn) + chalk.gray(' and ') +
-            dates[j].start.format(config.formatIn) + '-' + dates[j].end.format(config.formatIn))
+            dates[i].start.format(formatIn) + '-' + dates[i].end.format(formatIn) + chalk.gray(' and ') +
+            dates[j].start.format(formatIn) + '-' + dates[j].end.format(formatIn))
         }
       }
-      dates[i] = dates[i].start.format(config.formatOut) + '-' + dates[i].end.format(config.formatOut)
+      dates[i] = dates[i].start.format(formatOut) + '-' + dates[i].end.format(formatOut)
     }
 
     dates = dates.join(', ')
@@ -156,7 +198,7 @@ function postProcess() {
     parsed[i].percentOfTotalUsers = (parsed[i].users / parsed[temp].users * 100).toFixed(2)
     parsed[i].percentOfTotalNewUsers = (parsed[i].newUsers / parsed[temp].newUsers * 100).toFixed(2)
     let temp2 = 0, temp3 = ''
-    config.devices.forEach(d => {
+    devices.forEach(d => {
       if (Object.keys(d)[0] === parsed[i].resolution) {
         if (++temp2 == 1)
           temp3 = d[parsed[i].resolution]
@@ -166,35 +208,34 @@ function postProcess() {
   }
   parsed[temp].percentOfTotalUsers = parsed[temp].percentOfTotalNewUsers = '100.00'
 
-  if (fs.existsSync(config.outpath))
-    fs.unlinkSync(config.outpath)
-  fs.copyFileSync(path.join(__dirname, config.head), config.outpath)
+  if (fs.existsSync(outpath))
+    fs.unlinkSync(outpath)
+  fs.appendFileSync(outpath, '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" \
+content="width=device-width, initial-scale=1"><style>th { cursor: pointer; } th, td { text-align: right; padding-right: 15px; }</style>\
+</head><body><table><tr>')
 
   Object.keys(parsed[0]).forEach(h => {
     let temp = h.replace(/([A-Z])/g, ' $1')
-    fs.appendFileSync(config.outpath, '      <th>' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>\n')
+    fs.appendFileSync(outpath, '<th>' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>')
   })
-  fs.appendFileSync(config.outpath, '    </tr>\n')
+  fs.appendFileSync(outpath, '</tr>')
 
   parsed.forEach(row => {
-    fs.appendFileSync(config.outpath, '    <tr>\n')
+    fs.appendFileSync(outpath, '<tr>')
     for (let col in row) {
-      fs.appendFileSync(config.outpath, '      <td>' + row[col] + '</td>\n')
+      fs.appendFileSync(outpath, '<td>' + row[col] + '</td>')
     }
-    fs.appendFileSync(config.outpath, '    </tr>\n')
+    fs.appendFileSync(outpath, '</tr>')
   })
 
-  fs.appendFileSync(config.outpath, '    <p>' + dates + '</p>\n')
-  fs.appendFileSync(config.outpath, rFile(config.foot))
-
-  if (meow.flags.update) {
-    if (fs.existsSync(config.scripts))
-      fs.unlinkSync(config.scripts)
-    fs.copyFileSync(path.join(__dirname, config.scripts), config.scripts)
-    if (fs.existsSync(config.styles))
-      fs.unlinkSync(config.styles)
-    fs.copyFileSync(path.join(__dirname, config.styles), config.styles)
-  }
+  fs.appendFileSync(outpath, '<p>' + dates + '</p>')
+  fs.appendFileSync(outpath, '</table><script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script><script>\
+var rows = $("tr").toArray().slice(1); var bottom = rows.pop(); $("th").on("click", e => { \
+rows = rows.sort(comparator(e.target.cellIndex)); this.direction = !this.direction; if (!this.direction) { rows = rows.reverse(); \
+} for (var i = 0; i < rows.length; i++) { $("table").append(rows[i]); } $("table").append(bottom); }); function comparator(i) { \
+return function (a, b) { a = value(a, i); b = value(b, i); \
+return $.isNumeric(a) && $.isNumeric(b) ? a - b : a.toString().localeCompare(b);};} function value(r, i) { \
+return $(r).children("td").eq(i).text();}</script></body></html>')
 
   console.log(chalk.green('COMPLETE') + ': ' + chalk.gray('Task completed successfully in ') +
     process.uptime().toPrecision(5) + chalk.gray(' sec'))

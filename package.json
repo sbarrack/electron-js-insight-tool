@@ -1,6 +1,6 @@
 {
   "name": "insight",
-  "version": "2020.03.11",
+  "version": "2020.03.24",
   "description": "Motionstrand insight application",
   "main": "index.js",
   "repository": "git@bitbucket.org:MOSderek/insight.git",
@@ -13,16 +13,5 @@
     "meow": "^6.0.1",
     "moment": "^2.24.0"
   },
-  "bin": "./index.js",
-  "pkg": {
-    "assets": [
-      "help.txt",
-      "meow.json",
-      "config.json",
-      "head.html",
-      "foot.html",
-      "page.js",
-      "style.css"
-    ]
-  }
+  "bin": "./index.js"
 }
