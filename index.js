@@ -3,8 +3,8 @@
 const fs = require('fs')
 const path = require('path')
 
-const meow = require('meow')('Usage\n$ insight-linux -i path\n$ insight-macos --help\n$ insight-win.exe --version\n\nOptions\
---help          Show this page\n--version       Show the version in use\n--input, -i     File or directory of files with insight data\
+const meow = require('meow')('Usage\n$ insight-linux -i path\n$ insight-macos --help\n$ insight-win.exe --version\n\nOptions\n\
+--help          Show this page\n--version       Show the version in use\n--input, -i     File or directory of files with insight data\n\
 --update, -u    Update the page styles and scripts\n\
 03/24/2020    v2020.03.24    © Motionstrand', {
   flags: {
