@@ -10,7 +10,6 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "csv-parse": "^4.8.5",
-    "jquery": "^3.5.1",
     "meow": "^6.0.1",
     "moment": "^2.24.0"
   },
@@ -21,6 +20,8 @@
   "bin": "./index.js",
   "devDependencies": {
     "bulma": "^0.8.2",
-    "node-sass": "^4.14.1"
+    "node-sass": "^4.14.1",
+    "pkg": "^4.4.8",
+    "jquery": "^3.5.1"
   }
 }
