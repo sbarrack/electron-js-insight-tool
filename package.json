@@ -8,10 +8,19 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "private": true,
   "dependencies": {
+    "bulma": "^0.8.2",
     "chalk": "^3.0.0",
     "csv-parse": "^4.8.5",
+    "jquery": "^3.5.1",
     "meow": "^6.0.1",
     "moment": "^2.24.0"
   },
-  "bin": "./index.js"
+  "scripts": {
+    "css": "yarn run node-sass style.scss style.css",
+    "watch": "yarn run css -w"
+  },
+  "bin": "./index.js",
+  "devDependencies": {
+    "node-sass": "^4.14.1"
+  }
 }

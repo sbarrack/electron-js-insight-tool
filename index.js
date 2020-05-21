@@ -1,12 +1,17 @@
-'use strict'
-
 const fs = require('fs')
 const path = require('path')
 
-const meow = require('meow')('Usage\n$ insight-linux -i path\n$ insight-macos --help\n$ insight-win.exe --version\n\nOptions\n\
---help          Show this page\n--version       Show the version in use\n--input, -i     File or directory of files with insight data\n\
---update, -u    Update the page styles and scripts\n\
-03/24/2020    v2020.03.24    © Motionstrand', {
+const meow = require('meow')(
+  'Usage\n\
+  $ insight-linux -i path\n\
+  $ insight-macos --help\n\
+  $ insight-win.exe --version\n\n\
+  Options\n\
+  --help          Show this page\n\
+  --version       Show the version in use\n\
+  --input, -i     File or directory of files with insight data\n\
+  --update, -u    Update the page styles and scripts\n\
+  03/24/2020    v2020.03.24    © Motionstrand', {
   flags: {
     input: {
       alias: 'i',
@@ -82,7 +87,6 @@ const devices = [
 ]
 
 var parsed = [], totals = [], dates = []
-
 
 if (fs.lstatSync(meow.flags.input).isDirectory()) {
   var ious = []
@@ -210,9 +214,10 @@ function postProcess() {
 
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
-  fs.appendFileSync(outpath, '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" \
-content="width=device-width, initial-scale=1"><style>th { cursor: pointer; } th, td { text-align: right; padding-right: 15px; }</style>\
-</head><body><table><tr>')
+  fs.appendFileSync(outpath,
+    '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" \
+    content="width=device-width, initial-scale=1"><link rel="stylesheet" href="style.css">\
+    </head><body><div class="table-container"><table class="table is-striped is-hoverable is-fullwidth is-bordered"><tr>')
 
   Object.keys(parsed[0]).forEach(h => {
     let temp = h.replace(/([A-Z])/g, ' $1')
@@ -229,13 +234,9 @@ content="width=device-width, initial-scale=1"><style>th { cursor: pointer; } th,
   })
 
   fs.appendFileSync(outpath, '<p>' + dates + '</p>')
-  fs.appendFileSync(outpath, '</table><script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script><script>\
-var rows = $("tr").toArray().slice(1); var bottom = rows.pop(); $("th").on("click", e => { \
-rows = rows.sort(comparator(e.target.cellIndex)); this.direction = !this.direction; if (!this.direction) { rows = rows.reverse(); \
-} for (var i = 0; i < rows.length; i++) { $("table").append(rows[i]); } $("table").append(bottom); }); function comparator(i) { \
-return function (a, b) { a = value(a, i); b = value(b, i); \
-return $.isNumeric(a) && $.isNumeric(b) ? a - b : a.toString().localeCompare(b);};} function value(r, i) { \
-return $(r).children("td").eq(i).text();}</script></body></html>')
+  fs.appendFileSync(outpath,
+    '</table></div><script src="node_modules/jquery/dist/jquery.min.js"></script>\
+    <script src="page.js"></script></body></html>')
 
   console.log(chalk.green('COMPLETE') + ': ' + chalk.gray('Task completed successfully in ') +
     process.uptime().toPrecision(5) + chalk.gray(' sec'))

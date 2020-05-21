@@ -1,0 +1,35 @@
+// $table-color 	color 	$text-strong 	hsl(0, 0%, 21%)
+// $table-background-color 	color 	$scheme-main 	hsl(0, 0%, 100%)
+// $table-cell-border 	size 	1px solid $border 	
+// $table-cell-border-width 	size 	0 0 1px 	
+// $table-cell-padding 	size 	0.5em 0.75em 	
+// $table-cell-heading-color 	color 	$text-strong 	hsl(0, 0%, 21%)
+// $table-head-cell-border-width 	size 	0 0 2px 	
+// $table-head-cell-color 	color 	$text-strong 	hsl(0, 0%, 21%)
+// $table-foot-cell-border-width 	size 	2px 0 0 	
+// $table-foot-cell-color 	color 	$text-strong 	hsl(0, 0%, 21%)
+// $table-head-background-color 	string 	transparent 	
+// $table-body-background-color 	string 	transparent 	
+// $table-foot-background-color 	string 	transparent 	
+// $table-row-hover-background-color 	color 	$scheme-main-bis 	hsl(0, 0%, 98%)
+// $table-row-active-background-color 	color 	$primary 	hsl(171, 100%, 41%)
+// $table-row-active-color 	color 	$primary-invert 	#fff
+// $table-striped-row-even-background-color 	color 	$scheme-main-bis 	hsl(0, 0%, 98%)
+// $table-striped-row-even-hover-background-color 	color 	$scheme-main-ter 	hsl(0, 0%, 96%)
+
+@import 'node_modules/bulma/sass/utilities/_all';
+@import 'node_modules/bulma/sass/elements/table';
+
+table {
+  max-width: 1200px;
+}
+
+th {
+  cursor: pointer;
+}
+
+th,
+td {
+  text-align: right;
+  padding-right: 15px;
+}
