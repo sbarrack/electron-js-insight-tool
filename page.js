@@ -12,6 +12,9 @@
       rows = rows.reverse();
     }
 
+    $('th').removeAttr('sort');
+    $(e.currentTarget).attr('sort', this.direction ? 'asc' : 'desc');
+
     for (var i = 0; i < rows.length; i++) {
       $('table').append(rows[i]);
     }

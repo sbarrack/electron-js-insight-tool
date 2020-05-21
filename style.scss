@@ -57,4 +57,12 @@ th {
   &:hover {
     background-color: $gray-lighter;
   }
+
+  &[sort="asc"]:after {
+    content: ' \25b4';
+  }
+  
+  &[sort="desc"]:after {
+    content: ' \25be';
+  }
 }

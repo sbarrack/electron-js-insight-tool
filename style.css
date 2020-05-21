@@ -160,3 +160,7 @@ th {
   transition: background-color 0.1s linear; }
   th:hover {
     background-color: #4b4b4b; }
+  th[sort="asc"]:after {
+    content: ' \25b4'; }
+  th[sort="desc"]:after {
+    content: ' \25be'; }
