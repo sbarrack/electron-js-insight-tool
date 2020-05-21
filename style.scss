@@ -1,35 +1,60 @@
-// $table-color 	color 	$text-strong 	hsl(0, 0%, 21%)
-// $table-background-color 	color 	$scheme-main 	hsl(0, 0%, 100%)
-// $table-cell-border 	size 	1px solid $border 	
-// $table-cell-border-width 	size 	0 0 1px 	
-// $table-cell-padding 	size 	0.5em 0.75em 	
-// $table-cell-heading-color 	color 	$text-strong 	hsl(0, 0%, 21%)
-// $table-head-cell-border-width 	size 	0 0 2px 	
-// $table-head-cell-color 	color 	$text-strong 	hsl(0, 0%, 21%)
-// $table-foot-cell-border-width 	size 	2px 0 0 	
-// $table-foot-cell-color 	color 	$text-strong 	hsl(0, 0%, 21%)
-// $table-head-background-color 	string 	transparent 	
-// $table-body-background-color 	string 	transparent 	
-// $table-foot-background-color 	string 	transparent 	
-// $table-row-hover-background-color 	color 	$scheme-main-bis 	hsl(0, 0%, 98%)
-// $table-row-active-background-color 	color 	$primary 	hsl(171, 100%, 41%)
-// $table-row-active-color 	color 	$primary-invert 	#fff
-// $table-striped-row-even-background-color 	color 	$scheme-main-bis 	hsl(0, 0%, 98%)
-// $table-striped-row-even-hover-background-color 	color 	$scheme-main-ter 	hsl(0, 0%, 96%)
+$primary: #2acc71;
+$gray: #262626;
+$gray-light: #383838;
+$gray-lighter: #4b4b4b;
+$white: white;
+
+$table-color: $white;
+$table-background-color: $gray;
+$table-cell-border: 0;
+$table-cell-border-width: 0d;
+$table-cell-heading-color: $white;
+$table-head-cell-border-width: 0;
+$table-head-cell-color: $white;
+$table-foot-cell-border-width: 0;
+$table-foot-cell-color: $white;
+$table-row-hover-background-color: $gray-lighter;
+$table-row-active-background-color: $primary;
+$table-row-active-color: $gray;
+$table-striped-row-even-background-color: $gray-light;
+$table-striped-row-even-hover-background-color: $gray-lighter;
 
 @import 'node_modules/bulma/sass/utilities/_all';
 @import 'node_modules/bulma/sass/elements/table';
 
+body {
+  color: $white;
+  background-color: $gray;
+}
+
 table {
   max-width: 1200px;
+  margin: auto;
+  border-collapse: collapse;
+  text-align: right;
+}
+
+tr {
+  transition: background-color 0.1s linear;
+
+  &:first-of-type {
+    border-bottom: 1px solid $white;
+    
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
+  
+  &:last-of-type {
+    border-top: 1px solid $white;
+  }
 }
 
 th {
   cursor: pointer;
-}
+  transition: background-color 0.1s linear;
 
-th,
-td {
-  text-align: right;
-  padding-right: 15px;
+  &:hover {
+    background-color: $gray-lighter;
+  }
 }

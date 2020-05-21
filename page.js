@@ -20,7 +20,9 @@
 
   $('tr').on('click', function (e) {
     $('tr').removeClass('is-selected');
-    $(e.currentTarget).addClass('is-selected');
+    if (!$(e.target).is('th')) {
+      $(e.currentTarget).addClass('is-selected');
+    }
   });
 
   function comparator(i) {

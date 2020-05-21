@@ -211,17 +211,18 @@ function postProcess() {
     parsed[i].device = temp3
   }
   parsed[temp].percentOfTotalUsers = parsed[temp].percentOfTotalNewUsers = '100.00'
+  parsed[temp].device = ''
 
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
   fs.appendFileSync(outpath,
     '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" \
     content="width=device-width, initial-scale=1"><link rel="stylesheet" href="style.css">\
-    </head><body><div class="table-container"><table class="table is-striped is-hoverable is-fullwidth is-bordered"><tr>')
+    </head><body><div class="table-container"><table class="table is-striped is-hoverable is-fullwidth"><tr>')
 
   Object.keys(parsed[0]).forEach(h => {
     let temp = h.replace(/([A-Z])/g, ' $1')
-    fs.appendFileSync(outpath, '<th>' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>')
+    fs.appendFileSync(outpath, '<th align="center">' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>')
   })
   fs.appendFileSync(outpath, '</tr>')
 
