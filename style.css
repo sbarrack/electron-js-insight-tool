@@ -20,11 +20,11 @@
     .table th.is-white {
       background-color: white;
       border-color: white;
-      color: #0a0a0a; }
+      color: black; }
     .table td.is-black,
     .table th.is-black {
-      background-color: #0a0a0a;
-      border-color: #0a0a0a;
+      background-color: black;
+      border-color: black;
       color: white; }
     .table td.is-light,
     .table th.is-light {
@@ -73,7 +73,7 @@
     .table td.is-selected,
     .table th.is-selected {
       background-color: #2acc71;
-      color: #262626; }
+      color: black; }
       .table td.is-selected a,
       .table td.is-selected strong,
       .table th.is-selected a,
@@ -85,13 +85,13 @@
       text-align: left; }
   .table tr.is-selected {
     background-color: #2acc71;
-    color: #262626; }
+    color: black; }
     .table tr.is-selected a,
     .table tr.is-selected strong {
       color: currentColor; }
     .table tr.is-selected td,
     .table tr.is-selected th {
-      border-color: #262626;
+      border-color: black;
       color: currentColor; }
   .table thead {
     background-color: transparent; }
@@ -138,10 +138,12 @@
 
 body {
   color: white;
-  background-color: #262626; }
+  background-color: #262626;
+  font-family: "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", helvetica, arial, sans-serif; }
 
 table {
   max-width: 1200px;
+  min-width: 769px;
   margin: auto;
   border-collapse: collapse;
   text-align: right; }

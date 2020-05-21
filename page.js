@@ -4,6 +4,7 @@
   var rows = $('tr').toArray().slice(1);
   var bottom = rows.pop();
 
+  // Sort
   $('th').on('click', function (e) {
     rows = rows.sort(comparator(e.target.cellIndex));
     this.direction = !this.direction;
@@ -21,9 +22,10 @@
     $('table').append(bottom);
   });
 
+  // Select
   $('tr').on('click', function (e) {
-    $('tr').removeClass('is-selected');
     if (!$(e.target).is('th')) {
+      $('tr').removeClass('is-selected');
       $(e.currentTarget).addClass('is-selected');
     }
   });

@@ -3,6 +3,7 @@ $gray: #262626;
 $gray-light: #383838;
 $gray-lighter: #4b4b4b;
 $white: white;
+$black: black;
 
 $table-color: $white;
 $table-background-color: $gray;
@@ -15,7 +16,7 @@ $table-foot-cell-border-width: 0;
 $table-foot-cell-color: $white;
 $table-row-hover-background-color: $gray-lighter;
 $table-row-active-background-color: $primary;
-$table-row-active-color: $gray;
+$table-row-active-color: $black;
 $table-striped-row-even-background-color: $gray-light;
 $table-striped-row-even-hover-background-color: $gray-lighter;
 
@@ -25,10 +26,12 @@ $table-striped-row-even-hover-background-color: $gray-lighter;
 body {
   color: $white;
   background-color: $gray;
+  font-family: "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", helvetica, arial, sans-serif;
 }
 
 table {
   max-width: 1200px;
+  min-width: 769px;
   margin: auto;
   border-collapse: collapse;
   text-align: right;
@@ -61,7 +64,7 @@ th {
   &[sort="asc"]:after {
     content: ' \25b4';
   }
-  
+
   &[sort="desc"]:after {
     content: ' \25be';
   }
