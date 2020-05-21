@@ -14,14 +14,16 @@
     "moment": "^2.24.0"
   },
   "scripts": {
-    "css": "yarn run node-sass style.scss style.css",
-    "watch": "yarn run css -w"
+    "css": "node-sass style.scss style.css",
+    "watch": "node-sass -w style.scss style.css",
+    "app": "electron app.js"
   },
   "bin": "./index.js",
   "devDependencies": {
     "bulma": "^0.8.2",
+    "electron": "^9.0.0",
+    "jquery": "^3.5.1",
     "node-sass": "^4.14.1",
-    "pkg": "^4.4.8",
-    "jquery": "^3.5.1"
+    "pkg": "^4.4.8"
   }
 }
