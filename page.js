@@ -29,7 +29,7 @@
       $(e.currentTarget).addClass('is-selected');
     }
   });
-
+  
   function comparator(i) {
     return function (a, b) {
       a = value(a, i);

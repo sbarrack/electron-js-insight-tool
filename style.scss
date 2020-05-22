@@ -1,12 +1,9 @@
 $primary: #2acc71;
-$gray: #262626;
-$gray-light: #383838;
-$gray-lighter: #4b4b4b;
-$white: white;
-$black: black;
+
+@import 'node_modules/bulma/sass/utilities/_all.sass';
 
 $table-color: $white;
-$table-background-color: $gray;
+$table-background-color: $grey-darker;
 $table-cell-border: 0;
 $table-cell-border-width: 0d;
 $table-cell-heading-color: $white;
@@ -14,18 +11,22 @@ $table-head-cell-border-width: 0;
 $table-head-cell-color: $white;
 $table-foot-cell-border-width: 0;
 $table-foot-cell-color: $white;
-$table-row-hover-background-color: $gray-lighter;
+$table-row-hover-background-color: $grey-light;
 $table-row-active-background-color: $primary;
 $table-row-active-color: $black;
-$table-striped-row-even-background-color: $gray-light;
-$table-striped-row-even-hover-background-color: $gray-lighter;
+$table-striped-row-even-background-color: $grey-dark;
+$table-striped-row-even-hover-background-color: $grey-light;
 
-@import 'node_modules/bulma/sass/utilities/_all';
-@import 'node_modules/bulma/sass/elements/table';
+@import 'node_modules/bulma/sass/elements/table.sass';
+@import 'node_modules/bulma/sass/elements/button.sass';
+@import 'node_modules/bulma/sass/form/shared.sass';
+@import 'node_modules/bulma/sass/form/tools.sass';
+@import 'node_modules/bulma/sass/form/file.sass';
+@import 'node_modules/bulma/sass/layout/section.sass';
 
 body {
   color: $white;
-  background-color: $gray;
+  background-color: $grey-darker;
   font-family: "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", helvetica, arial, sans-serif;
 }
 
@@ -58,7 +59,7 @@ th {
   transition: background-color 0.1s linear;
 
   &:hover {
-    background-color: $gray-lighter;
+    background-color: $grey-light;
   }
 
   &[sort="asc"]:after {
@@ -67,5 +68,23 @@ th {
 
   &[sort="desc"]:after {
     content: ' \25be';
+  }
+}
+
+.file-cta,
+.file-name {
+  height: auto;
+}
+
+#front {
+  text-align: center;
+
+  .field.is-grouped {
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .control {
+      margin-bottom: 20px;
+    }
   }
 }
