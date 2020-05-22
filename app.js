@@ -16,8 +16,10 @@ const createMainWindow = async () => {
   const win = new BrowserWindow({
     title: app.name,
     show: false,
-    width: 600,
-    height: 400
+    width: 500,
+    height: 450,
+    minHeight: 350,
+    minWidth: 370
   });
 
   win.on('ready-to-show', () => {
