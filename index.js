@@ -236,8 +236,8 @@ function postProcess() {
 
   fs.appendFileSync(outpath, '<p>' + dates + '</p>')
   fs.appendFileSync(outpath,
-    '</table></div><script src="node_modules/jquery/dist/jquery.min.js"></script>\
-    <script src="page.js"></script></body></html>')
+    '</table></div><script src="./node_modules/jquery/dist/jquery.min.js"></script>\
+    <script src="./page.js"></script></body></html>')
 
   console.log(chalk.green('COMPLETE') + ': ' + chalk.gray('Task completed successfully in ') +
     process.uptime().toPrecision(5) + chalk.gray(' sec'))

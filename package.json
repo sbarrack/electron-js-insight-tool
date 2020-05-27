@@ -16,7 +16,7 @@
   "scripts": {
     "css": "node-sass style.scss style.css",
     "watch": "node-sass -w style.scss style.css",
-    "app": "electron app.js"
+    "app": "electron main.js"
   },
   "bin": "./index.js",
   "devDependencies": {
