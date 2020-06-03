@@ -1,29 +1,42 @@
 (($) => {
-  'use strict';
-  const ipc = require('electron').ipcRenderer;
-
   $(document).ready(() => {
-    var inputFile = 'Current working directory';
+    var $runButton = $('button.is-primary');
+    var $resetButton = $('button.is-danger');
     var $fileButton = $('input');
     var $fileLabel = $('.file-name');
+    var files;
+    const cwd = location.pathname.slice(0, location.pathname.lastIndexOf('/'));
 
-    // $fileButton.on('change', e => {
-    //   var outText = $fileButton.val() !== '' ? inputFile = $fileButton.val() : inputFile;
-    //   var a = outText.split('\\');
-    //   outText = a[a.length - 1];
-    //   $fileLabel.text(outText);
-    // });
+    $fileButton.on('change', e => {
+      let temp = Array.from($fileButton[0].files);
+      
+      temp = temp.filter(elem => {
+        return elem.name.toLowerCase().endsWith('.csv');
+      });
 
-    $('input').on('click', e => {
-      e.preventDefault();
-      ipc.send('open-file-dialog');
+      if (temp.length) {
+        files = temp;
+        if (files.length == 1) {
+          $fileLabel.text(files[0].name);
+        } else if (files.length > 1) {
+          $fileLabel.text(files[0].path.replace('/' + files[0].name, ''));
+        }
+      }
     });
 
-    ipc.on('selected-file', (event, path) => {
-      var outText = inputFile = path;
-      var a = outText.split('\\');
-      outText = a[a.length - 1];
-      $fileLabel.text(outText);
+    $runButton.on('click', e => {
+      let temp = files;
+      if (!temp.length) {
+        temp = [ { cwd: cwd } ];
+      }
+      // TODO run node script on temp
     });
+
+    $resetButton.on('click', () => {
+      files = [];
+      $fileLabel.text(cwd);
+    });
+
+    $resetButton.trigger('click');
   });;
 })(jQuery);
