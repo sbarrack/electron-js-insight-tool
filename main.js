@@ -7,7 +7,7 @@ const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
 
 unhandled();
-debug();
+// debug();
 contextMenu();
 
 let mainWindow;
@@ -16,8 +16,8 @@ const createMainWindow = async () => {
   const win = new BrowserWindow({
     title: app.name,
     show: false,
-    width: 800,
-    height: 600,
+    width: 500,
+    height: 450,
     minHeight: 350,
     minWidth: 370
   });
