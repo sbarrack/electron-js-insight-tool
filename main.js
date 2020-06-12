@@ -72,4 +72,7 @@ app.on('activate', async () => {
 
 ipcMain.on('run', (event, arg) => {
   childProcess.fork('./index.js', ['-i', arg[0]]);
+
+  // TODO open genrated page in main/second window
+  // https://nodejs.org/api/child_process.html#child_process_class_childprocess
 })
