@@ -1,5 +1,9 @@
+const jQuery = require('jquery');
+
 (($) => {
   $(document).ready(() => {
+    const { ipcRenderer } = require('electron');
+
     var $runButton = $('button.is-primary');
     var $resetButton = $('button.is-danger');
     var $fileButton = $('input');
@@ -25,11 +29,15 @@
     });
 
     $runButton.on('click', e => {
-      let temp = files;
+      let temp = [];
+      files.forEach(file => {
+        temp.push(file.path);
+      });
       if (!temp.length) {
-        temp = [ { cwd: cwd } ];
+        temp = [ cwd ];
       }
-      // TODO run node script on temp
+      
+      ipcRenderer.send('run', temp);
     });
 
     $resetButton.on('click', () => {
@@ -38,5 +46,5 @@
     });
 
     $resetButton.trigger('click');
-  });;
+  });
 })(jQuery);

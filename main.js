@@ -1,6 +1,6 @@
 'use strict';
 const path = require('path');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const { is } = require('electron-util');
 const unhandled = require('electron-unhandled');
 const debug = require('electron-debug');
@@ -16,10 +16,13 @@ const createMainWindow = async () => {
   const win = new BrowserWindow({
     title: app.name,
     show: false,
-    width: 800,
-    height: 600,
-    minHeight: 350,
-    minWidth: 370
+    width: 1000,
+    height: 800,
+    minHeight: 300,
+    minWidth: 450,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   win.on('ready-to-show', () => {
@@ -65,3 +68,7 @@ app.on('activate', async () => {
   await app.whenReady();
   mainWindow = await createMainWindow();
 })();
+
+ipcMain.on('run', (event, arg) => {
+  console.log(arg)
+})
