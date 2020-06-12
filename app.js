@@ -30,10 +30,11 @@ const jQuery = require('jquery');
 
     $runButton.on('click', e => {
       let temp = [];
-      files.forEach(file => {
-        temp.push(file.path);
-      });
-      if (!temp.length) {
+      if (files.length > 1) {
+        temp.push(files[0].path.slice(0, -files[0].name.length - 1));
+      } else if (files.length == 1) {
+        temp = [ files[0].path ];
+      } else {
         temp = [ cwd ];
       }
       

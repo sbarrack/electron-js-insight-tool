@@ -5,6 +5,7 @@ const { is } = require('electron-util');
 const unhandled = require('electron-unhandled');
 const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
+const childProcess = require('child_process');
 
 unhandled();
 debug();
@@ -70,5 +71,5 @@ app.on('activate', async () => {
 })();
 
 ipcMain.on('run', (event, arg) => {
-  console.log(arg)
+  childProcess.fork('./index.js', ['-i', arg[0]]);
 })
