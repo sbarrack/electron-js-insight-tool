@@ -10,7 +10,7 @@ const meow = require('meow')(
   --help          Show this page\n\
   --version       Show the version in use\n\
   --input, -i     File or directory of files with insight data\n\
-  06/12/2020    v2020.05.21    © Motionstrand', {
+  07/21/2020    v2020.05.21    © Motionstrand', {
   flags: {
     input: {
       alias: 'i',

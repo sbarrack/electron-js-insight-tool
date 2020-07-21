@@ -71,8 +71,18 @@ app.on('activate', async () => {
 })();
 
 ipcMain.on('run', (event, arg) => {
-  childProcess.fork('./index.js', ['-i', arg[0]]);
+  var thread = childProcess.fork('./index.js', ['-i', arg[0]]);
 
   // TODO open genrated page in main/second window
   // https://nodejs.org/api/child_process.html#child_process_class_childprocess
+  thread.on('exit', code => {
+    const outputWindow = new BrowserWindow({
+      title: app.name,
+      show: true,
+      width: 1000,
+      height: 800,
+      minHeight: 300,
+      minWidth: 450
+    });
+  });
 })

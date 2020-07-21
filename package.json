@@ -9,9 +9,9 @@
   "private": true,
   "dependencies": {
     "chalk": "^3.0.0",
-    "csv-parse": "^4.8.5",
-    "meow": "^6.0.1",
-    "moment": "^2.24.0"
+    "csv-parse": "^4.11.1",
+    "meow": "^6.1.1",
+    "moment": "^2.27.0"
   },
   "scripts": {
     "css": "node-sass style.scss style.css",
@@ -21,13 +21,13 @@
   "bin": "./index.js",
   "devDependencies": {
     "bulma": "^0.8.2",
-    "electron": "^9.0.0",
-    "electron-context-menu": "^2.0.1",
+    "electron": "^9.1.1",
+    "electron-context-menu": "^2.2.0",
     "electron-debug": "^3.1.0",
     "electron-unhandled": "^3.0.2",
-    "electron-util": "^0.14.1",
+    "electron-util": "^0.14.2",
     "jquery": "^3.5.1",
     "node-sass": "^4.14.1",
-    "pkg": "^4.4.8"
+    "pkg": "^4.4.9"
   }
 }
