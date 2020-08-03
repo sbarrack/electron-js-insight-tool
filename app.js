@@ -13,7 +13,7 @@ const jQuery = require('jquery');
 
     $fileButton.on('change', e => {
       let temp = Array.from($fileButton[0].files);
-      
+
       temp = temp.filter(elem => {
         return elem.name.toLowerCase().endsWith('.csv');
       });
@@ -33,11 +33,11 @@ const jQuery = require('jquery');
       if (files.length > 1) {
         temp.push(files[0].path.slice(0, -files[0].name.length - 1));
       } else if (files.length == 1) {
-        temp = [ files[0].path ];
+        temp = [files[0].path];
       } else {
-        temp = [ cwd ];
+        temp = [cwd];
       }
-      
+
       ipcRenderer.send('run', temp);
     });
 

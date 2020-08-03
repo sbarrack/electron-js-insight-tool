@@ -1,11 +1,10 @@
 const fs = require('fs')
-const path = require('path')
-
 const meow = require('meow')(
   'Usage\n\
   $ insight-linux -i path\n\
   $ insight-macos --help\n\
-  $ insight-win.exe --version\n\n\
+  $ insight-win.exe --version\n\
+  \n\
   Options\n\
   --help          Show this page\n\
   --version       Show the version in use\n\
@@ -20,6 +19,7 @@ const meow = require('meow')(
   inferType: true,
   booleanDefault: true
 })
+
 const chalk = require('chalk')
 
 if (!meow.flags.input) {
@@ -30,8 +30,8 @@ if (!meow.flags.input) {
   process.exit()
 }
 
+const path = require('path')
 const readline = require('readline')
-
 const moment = require('moment')
 const csvParse = require('csv-parse')
 
@@ -57,6 +57,7 @@ const parseDef = {
   skip_lines_with_error: true,
   skip_lines_with_empty_values: true
 }
+
 const outpath = 'index.html'
 const formatIn = 'YYYYMMDD'
 const formatOut = 'M/D/YY'
@@ -82,10 +83,13 @@ const devices = [
   { '240x320': 'Lyf F90M (KaiOS)' }
 ]
 
-var parsed = [], totals = [], dates = []
+var parsed = []
+var totals = []
+var dates = []
 
 if (fs.lstatSync(meow.flags.input).isDirectory()) {
   var ious = []
+
   fs.readdirSync(meow.flags.input, { withFileTypes: true }).forEach((f, i) => {
     if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
       ious[i] = new Promise((resolve, reject) => {
@@ -95,36 +99,42 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
             reject(e)
             return
           }
+          
           let temp = data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2).split('-')
           temp = {
             start: moment(temp[0], formatIn),
             end: moment(temp[1], formatIn)
           }
+
           if (!(temp.start.isValid() && temp.end.isValid()) || temp.start.isSameOrAfter(temp.end)) {
             console.log(chalk.yellowBright('WARNING') + ': ' +
               chalk.gray('Invalid date range for ') + f.name)
           } else {
             dates.push(temp)
           }
+
           csvParse(data, parseDef, parserHandler)
           resolve(data)
         })
       })
     }
   })
+
   Promise.allSettled(ious).then(postProcess)
 } else {
   var input = fs.createReadStream(meow.flags.input)
+
   input.on('ready', dateGetter)
   input.pipe(csvParse(parseDef, parserHandler))
   input.on('close', postProcess)
 }
 
-
 function rowOp(row) {
   delete row.undefined
+
   if (typeof row.users === 'string') row.users = +row.users.replace(/,/g, '')
   if (typeof row.newUsers === 'string') row.newUsers = +row.newUsers.replace(/,/g, '')
+
   return row
 }
 
@@ -133,6 +143,7 @@ function parserHandler(e, data) {
     console.error(chalk.redBright(e))
     return
   }
+
   totals.push(data.pop())
   parsed = parsed.concat(data)
 }
@@ -181,11 +192,13 @@ function postProcess() {
     users: 0,
     newUsers: 0
   })
+
   let temp = parsed.length - 1
   totals.forEach(t => {
     parsed[temp].users += t.users
     parsed[temp].newUsers += t.newUsers
   })
+
   for (let i = 0; i < parsed.length - 1; i++) {
     for (let j = i + 1; j < parsed.length - 1; j++) {
       if (parsed[i].resolution === parsed[j].resolution) {
@@ -194,23 +207,28 @@ function postProcess() {
         parsed.splice(j--, 1)
       }
     }
+
     temp = parsed.length - 1
     parsed[i].percentOfTotalUsers = (parsed[i].users / parsed[temp].users * 100).toFixed(2)
     parsed[i].percentOfTotalNewUsers = (parsed[i].newUsers / parsed[temp].newUsers * 100).toFixed(2)
     let temp2 = 0, temp3 = ''
+
     devices.forEach(d => {
       if (Object.keys(d)[0] === parsed[i].resolution) {
         if (++temp2 == 1)
           temp3 = d[parsed[i].resolution]
       }
     })
+
     parsed[i].device = temp3
   }
+
   parsed[temp].percentOfTotalUsers = parsed[temp].percentOfTotalNewUsers = '100.00'
   parsed[temp].device = ''
 
   if (fs.existsSync(outpath))
     fs.unlinkSync(outpath)
+
   fs.appendFileSync(outpath,
     '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" \
     content="width=device-width, initial-scale=1"><link rel="stylesheet" href="style.css">\
@@ -224,17 +242,21 @@ function postProcess() {
 
   parsed.forEach(row => {
     fs.appendFileSync(outpath, '<tr>')
+
     for (let col in row) {
       fs.appendFileSync(outpath, '<td>' + row[col] + '</td>')
     }
+
     fs.appendFileSync(outpath, '</tr>')
   })
 
   fs.appendFileSync(outpath, '<div id="top"><span class="control">\
   <a class="button is-danger" href="app.html">Back</a></span>\
   <span>' + dates + '</span></div>')
+
   fs.appendFileSync(outpath,
-    `</table></div><script>if (typeof module === 'object') {window.module = module; module = undefined;}</script><script src="./node_modules/jquery/dist/jquery.min.js"></script>\
+    `</table></div><script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>\
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>\
     <script src="./page.js"></script><script>if (window.module) module = window.module;</script></body></html>`)
 
   console.log(chalk.green('COMPLETE') + ': ' + chalk.gray('Task completed successfully in ') +
