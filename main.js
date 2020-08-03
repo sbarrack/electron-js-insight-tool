@@ -8,7 +8,7 @@ const contextMenu = require('electron-context-menu');
 const childProcess = require('child_process');
 
 unhandled();
-debug();
+// debug();
 contextMenu();
 
 let mainWindow;
@@ -73,26 +73,7 @@ app.on('activate', async () => {
 ipcMain.on('run', (event, arg) => {
   var thread = childProcess.fork('./index.js', ['-i', arg[0]]);
 
-  // TODO open genrated page in main window
-  // https://nodejs.org/api/child_process.html#child_process_class_childprocess
   thread.on('exit', code => {
-    const outputWin = new BrowserWindow({
-      title: app.name,
-      show: true,
-      width: 1000,
-      height: 800,
-      minHeight: 300,
-      minWidth: 450
-    });
-
-    outputWin.on('ready-to-show', () => {
-      outputWin.show();
-    });
-  
-    outputWin.on('closed', () => {
-      outputWin = undefined;
-    });
-  
-    outputWin.loadFile(path.join(__dirname, 'index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
   });
 })

@@ -1,6 +1,6 @@
 {
   "name": "insight",
-  "version": "2020.05.21",
+  "version": "2020.08.03",
   "description": "Motionstrand insight application",
   "main": "index.js",
   "repository": "git@bitbucket.org:MOSderek/insight.git",
@@ -21,7 +21,7 @@
   "bin": "./index.js",
   "devDependencies": {
     "bulma": "^0.8.2",
-    "electron": "^9.1.1",
+    "electron": "^9.1.2",
     "electron-context-menu": "^2.2.0",
     "electron-debug": "^3.1.0",
     "electron-unhandled": "^3.0.2",

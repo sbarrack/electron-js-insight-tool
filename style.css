@@ -1593,6 +1593,14 @@ body {
   background-color: #363636;
   font-family: "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", helvetica, arial, sans-serif; }
 
+#top {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 20px 40px; }
+
 table {
   max-width: 1200px;
   min-width: 769px;

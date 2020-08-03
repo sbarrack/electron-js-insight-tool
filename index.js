@@ -10,7 +10,7 @@ const meow = require('meow')(
   --help          Show this page\n\
   --version       Show the version in use\n\
   --input, -i     File or directory of files with insight data\n\
-  07/21/2020    v2020.05.21    © Motionstrand', {
+  08/03/2020    v2020.08.03    © Motionstrand', {
   flags: {
     input: {
       alias: 'i',
@@ -230,7 +230,9 @@ function postProcess() {
     fs.appendFileSync(outpath, '</tr>')
   })
 
-  fs.appendFileSync(outpath, '<p>' + dates + '</p>')
+  fs.appendFileSync(outpath, '<div id="top"><span class="control">\
+  <a class="button is-danger" href="app.html">Back</a></span>\
+  <span>' + dates + '</span></div>')
   fs.appendFileSync(outpath,
     '</table></div><script src="./node_modules/jquery/dist/jquery.min.js"></script>\
     <script src="./page.js"></script></body></html>')
