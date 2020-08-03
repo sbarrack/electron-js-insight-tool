@@ -234,8 +234,8 @@ function postProcess() {
   <a class="button is-danger" href="app.html">Back</a></span>\
   <span>' + dates + '</span></div>')
   fs.appendFileSync(outpath,
-    '</table></div><script src="./node_modules/jquery/dist/jquery.min.js"></script>\
-    <script src="./page.js"></script></body></html>')
+    `</table></div><script>if (typeof module === 'object') {window.module = module; module = undefined;}</script><script src="./node_modules/jquery/dist/jquery.min.js"></script>\
+    <script src="./page.js"></script><script>if (window.module) module = window.module;</script></body></html>`)
 
   console.log(chalk.green('COMPLETE') + ': ' + chalk.gray('Task completed successfully in ') +
     process.uptime().toPrecision(5) + chalk.gray(' sec'))

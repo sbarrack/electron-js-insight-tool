@@ -1599,7 +1599,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 20px 40px; }
+  padding: 20px 0; }
 
 table {
   max-width: 1200px;
