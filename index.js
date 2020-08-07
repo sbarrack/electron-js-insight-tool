@@ -1,32 +1,10 @@
 const fs = require('fs')
-const meow = require('meow')(
-  'Usage\n\
-  $ insight-linux -i path\n\
-  $ insight-macos --help\n\
-  $ insight-win.exe --version\n\
-  \n\
-  Options\n\
-  --help          Show this page\n\
-  --version       Show the version in use\n\
-  --input, -i     File or directory of files with insight data\n\
-  08/03/2020    v2020.08.03    © Motionstrand', {
-  flags: {
-    input: {
-      alias: 'i',
-      type: 'string'
-    }
-  },
-  inferType: true,
-  booleanDefault: true
-})
 
-const chalk = require('chalk')
-
-if (!meow.flags.input) {
-  console.log(chalk.redBright('MISSING TARGET') + ': Please use -i to provide a valid path')
+if (!process.argv[2]) {
+  console.log('Missing path')
   process.exit()
-} else if (!fs.existsSync(meow.flags.input)) {
-  console.log(chalk.redBright('INVALID TARGET') + ': The path is not valid or does not exist')
+} else if (!fs.existsSync(process.argv[2])) {
+  console.log('Invalid file(s)/folder')
   process.exit()
 }
 
@@ -86,16 +64,16 @@ const devices = [
 var parsed = []
 var totals = []
 var dates = []
-
-if (fs.lstatSync(meow.flags.input).isDirectory()) {
+console.log(process.argv)
+if (fs.lstatSync(process.argv[2]).isDirectory()) {
   var ious = []
 
-  fs.readdirSync(meow.flags.input, { withFileTypes: true }).forEach((f, i) => {
+  fs.readdirSync(process.argv[2], { withFileTypes: true }).forEach((f, i) => {
     if (f.isFile() && f.name.includes('.csv', f.name.length - 4)) {
       ious[i] = new Promise((resolve, reject) => {
-        fs.readFile(path.join(meow.flags.input, f.name), (e, data) => {
+        fs.readFile(path.join(process.argv[2], f.name), (e, data) => {
           if (e) {
-            console.log(chalk.redBright(e))
+            console.log(e)
             reject(e)
             return
           }
@@ -107,8 +85,7 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
           }
 
           if (!(temp.start.isValid() && temp.end.isValid()) || temp.start.isSameOrAfter(temp.end)) {
-            console.log(chalk.yellowBright('WARNING') + ': ' +
-              chalk.gray('Invalid date range for ') + f.name)
+            console.log('WARNING: Invalid date range for ' + f.name)
           } else {
             dates.push(temp)
           }
@@ -122,7 +99,7 @@ if (fs.lstatSync(meow.flags.input).isDirectory()) {
 
   Promise.allSettled(ious).then(postProcess)
 } else {
-  var input = fs.createReadStream(meow.flags.input)
+  var input = fs.createReadStream(process.argv[2])
 
   input.on('ready', dateGetter)
   input.pipe(csvParse(parseDef, parserHandler))
@@ -140,7 +117,7 @@ function rowOp(row) {
 
 function parserHandler(e, data) {
   if (e) {
-    console.error(chalk.redBright(e))
+    console.error(e)
     return
   }
 
@@ -176,8 +153,8 @@ function postProcess() {
         } else if (dates[i].end.isBefore(dates[j].start)) {
           continue
         } else {
-          console.log(chalk.yellowBright('WARNING') + ': ' + chalk.gray('Coinciding date range for ') +
-            dates[i].start.format(formatIn) + '-' + dates[i].end.format(formatIn) + chalk.gray(' and ') +
+          console.log('WARNING: Coinciding date range for ' +
+            dates[i].start.format(formatIn) + '-' + dates[i].end.format(formatIn) + ' and ' +
             dates[j].start.format(formatIn) + '-' + dates[j].end.format(formatIn))
         }
       }
@@ -259,6 +236,6 @@ function postProcess() {
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>\
     <script src="./page.js"></script><script>if (window.module) module = window.module;</script></body></html>`)
 
-  console.log(chalk.green('COMPLETE') + ': ' + chalk.gray('Task completed successfully in ') +
-    process.uptime().toPrecision(5) + chalk.gray(' sec'))
+  console.log('COMPLETE: Task completed successfully in ' +
+    process.uptime().toPrecision(5) + ' sec')
 }

@@ -130,10 +130,13 @@
       .table th.is-selected a,
       .table th.is-selected strong {
         color: currentColor; }
+    .table td.is-vcentered,
+    .table th.is-vcentered {
+      vertical-align: middle; }
   .table th {
     color: white; }
     .table th:not([align]) {
-      text-align: left; }
+      text-align: inherit; }
   .table tr.is-selected {
     background-color: #2acc71;
     color: #0a0a0a; }
@@ -1248,7 +1251,7 @@
   clear: both;
   font-size: 1rem;
   position: relative;
-  text-align: left; }
+  text-align: inherit; }
   .control.has-icons-left .input:focus ~ .icon,
   .control.has-icons-left .select:focus ~ .icon, .control.has-icons-right .input:focus ~ .icon,
   .control.has-icons-right .select:focus ~ .icon {
@@ -1567,7 +1570,7 @@
   display: block;
   max-width: 16em;
   overflow: hidden;
-  text-align: left;
+  text-align: inherit;
   text-overflow: ellipsis; }
 
 .file-icon {
