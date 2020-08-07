@@ -36,7 +36,7 @@ const parseDef = {
   skip_lines_with_empty_values: true
 }
 
-const outpath = 'index.html'
+const outpath = path.join(process.argv[3], 'index.html')
 const formatIn = 'YYYYMMDD'
 const formatOut = 'M/D/YY'
 const devices = [
@@ -64,7 +64,6 @@ const devices = [
 var parsed = []
 var totals = []
 var dates = []
-console.log(process.argv)
 if (fs.lstatSync(process.argv[2]).isDirectory()) {
   var ious = []
 

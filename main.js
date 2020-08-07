@@ -71,9 +71,9 @@ app.on('activate', async () => {
 })();
 
 ipcMain.on('run', (event, arg) => {
-  var thread = childProcess.fork('./index.js', [ arg[0] ]);
+  var thread = childProcess.fork(path.join(__dirname, 'index.js'), [ arg[0], app.getPath('temp') ]);
 
   thread.on('exit', code => {
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    mainWindow.loadFile(path.join(app.getPath('temp'), 'index.html'));
   });
 })

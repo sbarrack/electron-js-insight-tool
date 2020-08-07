@@ -113,7 +113,5 @@ dist
 
 # Other
 *.csv
-input
 dist
-build.sh
 index.html
