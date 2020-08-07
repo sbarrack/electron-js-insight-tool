@@ -207,7 +207,7 @@ function postProcess() {
 
   fs.appendFileSync(outpath,
     '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" \
-    content="width=device-width, initial-scale=1"><link rel="stylesheet" href="style.css">\
+    content="width=device-width, initial-scale=1"><link rel="stylesheet" href="' + path.join(__dirname, 'style.css') + '">\
     </head><body><div class="table-container"><table class="table is-striped is-hoverable is-fullwidth"><tr>')
 
   Object.keys(parsed[0]).forEach(h => {
@@ -227,13 +227,13 @@ function postProcess() {
   })
 
   fs.appendFileSync(outpath, '<div id="top"><span class="control">\
-  <a class="button is-danger" href="app.html">Back</a></span>\
+  <a class="button is-danger" href="' + path.join(__dirname, 'app.html') + '">Back</a></span>\
   <span>' + dates + '</span></div>')
 
   fs.appendFileSync(outpath,
     `</table></div><script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>\
-    <script src="./node_modules/jquery/dist/jquery.min.js"></script>\
-    <script src="./page.js"></script><script>if (window.module) module = window.module;</script></body></html>`)
+    <script src="${path.join(__dirname, 'node_modules/jquery/dist/jquery.min.js')}"></script>\
+    <script src="${path.join(__dirname, 'page.js')}"></script><script>if (window.module) module = window.module;</script></body></html>`)
 
   console.log('COMPLETE: Task completed successfully in ' +
     process.uptime().toPrecision(5) + ' sec')
