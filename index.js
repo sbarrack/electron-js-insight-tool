@@ -210,7 +210,7 @@ function postProcess() {
     content="width=device-width, initial-scale=1"><link rel="stylesheet" href="' + path.join(__dirname, 'style.css') + '">\
     </head><body><div class="table-container"><table class="table is-striped is-hoverable is-fullwidth"><tr>')
 
-  Object.keys(parsed[0]).forEach(h => {
+  Object.keys(parsed[0]).forEach((h, i) => {
     let temp = h.replace(/([A-Z])/g, ' $1')
     fs.appendFileSync(outpath, '<th align="center">' + temp.charAt(0).toUpperCase() + temp.slice(1) + '</th>')
   })
@@ -227,7 +227,8 @@ function postProcess() {
   })
 
   fs.appendFileSync(outpath, '<div id="top"><span class="control">\
-  <a class="button is-danger" href="' + path.join(__dirname, 'app.html') + '">Back</a></span>\
+  <a class="button is-danger" href="' + path.join(__dirname, 'app.html') + '">Back</a>\
+  <a class="button is-primary" href="' + outpath + '" download="export_' + new Date().toDateString() + '.html">Export HTML</a></span>\
   <span>' + dates + '</span></div>')
 
   fs.appendFileSync(outpath,
