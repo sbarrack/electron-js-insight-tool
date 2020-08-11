@@ -2,6 +2,8 @@
   'use strict';
 
   $(document).ready(function () {
+    const { clipboard } = require('electron');
+
     var rows = $('tr').toArray().slice(1);
     var bottom = rows.pop();
 
@@ -29,6 +31,15 @@
         $('tr').removeClass('is-selected');
         $(e.currentTarget).addClass('is-selected');
       }
+    });
+
+    // Copy
+    $('td').on('dblclick', function (e) {
+      clipboard.writeText($(this).text());
+      $('#copied').addClass('active');
+      setTimeout(function() {
+        $('#copied').removeClass('active');
+      }, 3000);
     });
   });
   

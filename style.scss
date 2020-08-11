@@ -19,6 +19,7 @@ $table-striped-row-even-hover-background-color: $grey-light;
 
 @import 'node_modules/bulma/sass/elements/table.sass';
 @import 'node_modules/bulma/sass/elements/button.sass';
+@import 'node_modules/bulma/sass/elements/notification.sass';
 @import 'node_modules/bulma/sass/form/shared.sass';
 @import 'node_modules/bulma/sass/form/tools.sass';
 @import 'node_modules/bulma/sass/form/file.sass';
@@ -95,5 +96,17 @@ th {
     .control {
       margin-bottom: 20px;
     }
+  }
+}
+
+#copied {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, calc(-20px - 100%));
+  transition: transform 1s ease;
+
+  &.active {
+    transform: translateX(-50%);
   }
 }

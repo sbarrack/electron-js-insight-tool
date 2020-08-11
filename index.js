@@ -231,7 +231,8 @@ function postProcess() {
   <span>' + dates + '</span></div>')
 
   fs.appendFileSync(outpath,
-    `</table></div><script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>\
+    `</table></div><div id="copied" class="notification is-primary">Copied text!</div>\
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>\
     <script src="${path.join(__dirname, 'node_modules/jquery/dist/jquery.min.js')}"></script>\
     <script src="${path.join(__dirname, 'page.js')}"></script><script>if (window.module) module = window.module;</script></body></html>`)
 
