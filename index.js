@@ -1,11 +1,9 @@
 const fs = require('fs')
 
 if (!process.argv[2]) {
-  console.log('Missing path')
   process.send('pathError')
   process.exit()
 } else if (!fs.existsSync(process.argv[2])) {
-  console.log('Invalid file(s)/folder')
   process.send('fileError')
   process.exit()
 }
@@ -66,6 +64,7 @@ const devices = [
 var parsed = []
 var totals = []
 var dates = []
+
 if (fs.lstatSync(process.argv[2]).isDirectory()) {
   var ious = []
 
@@ -79,7 +78,7 @@ if (fs.lstatSync(process.argv[2]).isDirectory()) {
             process.send('pageError')
             return
           }
-          
+
           let temp = data.toString().split(/(?:\r\n|\r|\n)/g)[3].slice(2).split('-')
           temp = {
             start: moment(temp[0], formatIn),

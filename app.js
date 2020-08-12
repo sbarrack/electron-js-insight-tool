@@ -39,6 +39,7 @@ const jQuery = require('jquery');
       }
 
       ipcRenderer.send('run', temp);
+      $runButton.addClass('is-loading');
     });
 
     $resetButton.on('click', () => {
@@ -49,6 +50,7 @@ const jQuery = require('jquery');
     $resetButton.trigger('click');
 
     ipcRenderer.on('error', (event, arg) => {
+      $runButton.removeClass('is-loading');
       $('#' + arg).addClass('active');
       setTimeout(() => {
         $('#' + arg).removeClass('active');
