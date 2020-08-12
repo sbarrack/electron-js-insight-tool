@@ -47,5 +47,12 @@ const jQuery = require('jquery');
     });
 
     $resetButton.trigger('click');
+
+    ipcRenderer.on('error', (event, arg) => {
+      $('#' + arg).addClass('active');
+      setTimeout(() => {
+        $('#' + arg).removeClass('active');
+      }, 3000);
+    });
   });
 })(jQuery);

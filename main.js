@@ -8,10 +8,10 @@ const contextMenu = require('electron-context-menu');
 const childProcess = require('child_process');
 
 unhandled();
-// debug();
 contextMenu();
 
 let mainWindow;
+var badDate;
 
 const createMainWindow = async () => {
   const win = new BrowserWindow({
@@ -72,8 +72,21 @@ app.on('activate', async () => {
 
 ipcMain.on('run', (event, arg) => {
   var thread = childProcess.fork(path.join(__dirname, 'index.js'), [ arg[0], app.getPath('temp') ]);
+  badDate = false;
 
-  thread.on('exit', code => {
-    mainWindow.loadFile(path.join(app.getPath('temp'), 'index.html'));
+  thread.on('message', m => {
+    if (m === 'pageDone') {
+      mainWindow.loadFile(path.join(app.getPath('temp'), 'index.html'));
+    } else if (m === 'dateWarning') {
+      badDate = true;
+    } else {
+      event.reply('error', m);
+    }
   });
-})
+});
+
+ipcMain.on('queryDate', (event, arg) => {
+  if (badDate) {
+    event.reply('error', 'dateWarning');
+  }
+});

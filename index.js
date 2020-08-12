@@ -2,9 +2,11 @@ const fs = require('fs')
 
 if (!process.argv[2]) {
   console.log('Missing path')
+  process.send('pathError')
   process.exit()
 } else if (!fs.existsSync(process.argv[2])) {
   console.log('Invalid file(s)/folder')
+  process.send('fileError')
   process.exit()
 }
 
@@ -74,6 +76,7 @@ if (fs.lstatSync(process.argv[2]).isDirectory()) {
           if (e) {
             console.log(e)
             reject(e)
+            process.send('pageError')
             return
           }
           
@@ -85,6 +88,7 @@ if (fs.lstatSync(process.argv[2]).isDirectory()) {
 
           if (!(temp.start.isValid() && temp.end.isValid()) || temp.start.isSameOrAfter(temp.end)) {
             console.log('WARNING: Invalid date range for ' + f.name)
+            process.send('dateWarning')
           } else {
             dates.push(temp)
           }
@@ -117,6 +121,7 @@ function rowOp(row) {
 function parserHandler(e, data) {
   if (e) {
     console.error(e)
+    process.send('pageError')
     return
   }
 
@@ -152,6 +157,7 @@ function postProcess() {
         } else if (dates[i].end.isBefore(dates[j].start)) {
           continue
         } else {
+          process.send('dateWarning')
           console.log('WARNING: Coinciding date range for ' +
             dates[i].start.format(formatIn) + '-' + dates[i].end.format(formatIn) + ' and ' +
             dates[j].start.format(formatIn) + '-' + dates[j].end.format(formatIn))
@@ -233,10 +239,12 @@ function postProcess() {
 
   fs.appendFileSync(outpath,
     `</table></div><div id="copied" class="notification is-primary">Copied text!</div>\
+    <div id="dateWarning" class="notification is-warning">Date ranges appear to coincide.</div>\
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>\
     <script src="${path.join(__dirname, 'node_modules/jquery/dist/jquery.min.js')}"></script>\
     <script src="${path.join(__dirname, 'page.js')}"></script><script>if (window.module) module = window.module;</script></body></html>`)
 
   console.log('COMPLETE: Task completed successfully in ' +
     process.uptime().toPrecision(5) + ' sec')
+  process.send('pageDone')
 }

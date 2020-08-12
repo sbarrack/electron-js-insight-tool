@@ -1714,11 +1714,11 @@ th {
     #front .field.is-grouped .control {
       margin-bottom: 20px; }
 
-#copied {
+.notification {
   position: fixed;
   top: 20px;
   left: 50%;
   transform: translate(-50%, calc(-20px - 100%));
   transition: transform 1s ease; }
-  #copied.active {
+  .notification.active {
     transform: translateX(-50%); }

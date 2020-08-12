@@ -2,10 +2,19 @@
   'use strict';
 
   $(document).ready(function () {
-    const { clipboard } = require('electron');
+    const { ipcRenderer, clipboard } = require('electron');
 
     var rows = $('tr').toArray().slice(1);
     var bottom = rows.pop();
+
+    ipcRenderer.send('queryDate');
+
+    ipcRenderer.on('error', (event, arg) => {
+      $('#' + arg).addClass('active');
+      setTimeout(() => {
+        $('#' + arg).removeClass('active');
+      }, 3000);
+    });
 
     // Sort
     $('th').on('click', function (e) {
